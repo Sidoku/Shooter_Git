@@ -30,6 +30,15 @@ enum  class EItemState : uint8
 	EIS_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
+UENUM(BlueprintType)
+enum  class EItemType : uint8
+{
+	EIT_Ammo UMETA(DisplayName = "Ammo"),
+	EIT_Weapon UMETA(DisplayName = "Weapon"),
+
+	EIT_MAX UMETA(DisplayName = "DefaultMAX"),
+};
+
 UCLASS()
 class SHOOTER_API AItem : public AActor
 {
@@ -55,17 +64,26 @@ protected:
 	void SetActiveStars();
 
 	// Sets properties of the items components based on item state
-	void SetItemProperties(EItemState State);
+	virtual void SetItemProperties(EItemState State);
 
 	// Called when ItemInterpTimer is finished
 	void FinishInterping();
 
 	// Handles item interpolation when in the EquipInterping state
 	void ItemInterp(float DeltaTime);
+
+	// Get interp location based on the Item type
+	FVector GetInterpLocation();
+
+	void PlayPickupSound();
+
 	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Called in AShooterCharacter::GetPickupItem
+	void PlayEquipSound();
 
 private:
 	// Skeletal mesh for the item
@@ -149,6 +167,14 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Item Properties", meta=(AllowPrivateAccess = "True"))
 	USoundCue* EquipSound;
 
+	// Enum for the type of item this Item is
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Item Properties", meta=(AllowPrivateAccess = "True"))
+	EItemType ItemType;
+
+	// Index of the interp location this item is interping to
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= "Item Properties", meta=(AllowPrivateAccess = "True"))
+	int32 InterpLocationIndex;
+
 public:
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget;}
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere;}
@@ -158,6 +184,7 @@ public:
 	FORCEINLINE USkeletalMeshComponent* GetItemMesh() const { return ItemMesh;}
 	FORCEINLINE USoundCue* GetPickupSound() const { return PickupSound;}
 	FORCEINLINE USoundCue* GetEquipSound() const { return EquipSound;}
+	FORCEINLINE int32 GetItemCount() const { return ItemCount; }
 
 	// Called from AShooterCharacter class
 	void StartItemCurve(AShooterCharacter* Char);
