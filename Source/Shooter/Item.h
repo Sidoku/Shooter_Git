@@ -77,6 +77,8 @@ protected:
 
 	void PlayPickupSound();
 
+	virtual void InitializeCustomDepth();
+
 	
 public:	
 	// Called every frame
@@ -185,6 +187,9 @@ public:
 	FORCEINLINE USoundCue* GetPickupSound() const { return PickupSound;}
 	FORCEINLINE USoundCue* GetEquipSound() const { return EquipSound;}
 	FORCEINLINE int32 GetItemCount() const { return ItemCount; }
+
+	virtual void EnableCustomDepth();
+	virtual void DisableCustomDepth();
 
 	// Called from AShooterCharacter class
 	void StartItemCurve(AShooterCharacter* Char);
