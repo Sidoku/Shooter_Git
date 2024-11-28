@@ -38,9 +38,6 @@ struct FWeaponDataTable : public FTableRowBase
 	USoundCue* EquipSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class UWidgetComponent* PickupWidget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USkeletalMesh* ItemMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -51,6 +48,12 @@ struct FWeaponDataTable : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* AmmoIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMaterialInstance* MaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaterialIndex;
 };
 /**
  * 
@@ -60,10 +63,15 @@ class SHOOTER_API AWeapon : public AItem
 {
 	GENERATED_BODY()
 public:
+	
 	AWeapon();
 	virtual void Tick(float DeltaTime) override;
+	
 protected:
+	
 	void StopFalling();
+
+	virtual void OnConstruction(const FTransform& Transform) override;
 	
 private:
 	FTimerHandle ThrowWeaponTimer;
@@ -101,6 +109,8 @@ private:
 	// Data table for weapon properties
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
 	UDataTable* WeaponDataTable;
+
+	int32 PreviousMaterialIndex;
 	
 public:
 	// Adds an impulse to the weapon
