@@ -12,6 +12,7 @@ enum class ECombatState: uint8
 {
 	ECS_Unoccupied UMETA(DisplayName = "Unoccupied"),
 	ECS_FireTimerInProgress UMETA(DisplayName = "FireTimerInProgress"),
+	ECS_Equipping UMETA(DisplayName = "Equipping"),
 	ECS_Reloading UMETA(DisplayName = "Reloading"),
 
 	ECS_MAX UMETA(DisplayName = "DefaultMAX")
@@ -30,6 +31,9 @@ struct FInterpLocation
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 ItemCount;
 };
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEquipItemDelegate, int32, CurrentSlotIndex, int32, NewSlotIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FHighlightIconDelegate, int32, SlotIndex, bool, bStartAnimation);
 
 UCLASS()
 class SHOOTER_API AShooterCharacter : public ACharacter
@@ -112,7 +116,7 @@ protected:
 	class AWeapon* SpawnDefaultWeapon();
 
 	// Takes a weapon and attaches it to the mesh
-	void EquipWeapon(AWeapon* WeaponToEquip);
+	void EquipWeapon(AWeapon* WeaponToEquip, bool bSwapping = false);
 
 	// Detach weapon and let it fall to the ground
 	void DropWeapon();
@@ -146,6 +150,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void FinishReloading();
 
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
+
 	// Checks to see if we have ammo of the equipped weapons ammo type
 	bool CarryingAmmo();
 
@@ -171,6 +178,19 @@ protected:
 	void PickupAmmo(class AAmmo* Ammo);
 
 	void InitializeInterpLocations();
+
+	void FKeyPressed();
+	void OneKeyPressed();
+	void TwoKeyPressed();
+	void ThreeKeyPressed();
+	void FourKeyPressed();
+	void FiveKeyPressed();
+
+	void ExchangeInventoryItems(int32 CurrentItemIndex, int32 NewItemIndex);
+
+	int32 GetEmptyInventorySlot();
+
+	void HighlightInventorySlot();
 	
 public:	
 	// Called every frame
@@ -227,7 +247,6 @@ private:
 	// Scale factor for mouse look sensitivity. Look up rate when aiming
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "True"), meta=(ClampMin= "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
 	float MouseAimingLookUpRate;
-	
 
 	// Randomized gunshot sound cure
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta=(AllowPrivateAccess = "True"))
@@ -258,7 +277,6 @@ private:
 	float CameraDefaultFOV;
 
 	// Field of view value for when zoomed in.
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= Combat, meta=(AllowPrivateAccess = "True"))
 	float CameraZoomedFOV;
 
@@ -358,6 +376,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta=(AllowPrivateAccess = "True"))
 	UAnimMontage* ReloadMontage;
 
+	// Montage for equip animations
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta=(AllowPrivateAccess = "True"))
+	UAnimMontage* EquipMontage;
+
 	// Transform of the clip when we first grab the clip when reloading
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta=(AllowPrivateAccess = "True"))
 	FTransform ClipTransform;
@@ -441,6 +463,24 @@ private:
 	// Time to wait before we can play equip sound
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Items, meta=(AllowPrivateAccess = "True"))
 	float EquipSoundResetTime;
+
+	// Array of AItems for inventory
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Inventory, meta=(AllowPrivateAccess = "True"))
+	TArray<AItem*> Inventory;
+
+	const int32 INVENTORY_CAPACITY{6};
+
+	// Delegate for sending slot information to inventory bar when equipping
+	UPROPERTY(BlueprintAssignable, Category= Delegates, meta=(AllowPrivateAccess = "True"))
+	FEquipItemDelegate EquipItemDelegate;
+
+	// Delegate for sending slot information for playing icon animation
+	UPROPERTY(BlueprintAssignable, Category= Delegates, meta=(AllowPrivateAccess = "True"))
+	FHighlightIconDelegate HighlightIconDelegate;
+
+	// The index for the currently highlighted slot
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Inventory, meta=(AllowPrivateAccess = "True"))
+	int32 HighlightedSlot;
 	
 public:
 	// Returns CameraBoom subobject
@@ -479,4 +519,6 @@ public:
 
 	void StartPickupSoundTimer();
 	void StartEquipSoundTimer();
+
+	void UnHighlightInventorySlot();
 };
