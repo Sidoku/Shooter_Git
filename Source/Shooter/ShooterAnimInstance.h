@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "WeaponType.h"
 #include "ShooterAnimInstance.generated.h"
 
 /**
@@ -124,4 +125,12 @@ private:
 	// True when Equipping
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Combat, meta=(AllowPrivateAccess = "True"))
 	bool bEquipping;
+
+	// Weapon type for the currently equipped weapon
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Combat, meta=(AllowPrivateAccess = "True"))
+	EWeaponType EquippedWeaponType;
+
+	// True when not reloading or equipping
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Combat, meta=(AllowPrivateAccess = "True"))
+	bool bShouldUseFABRIK;
 };

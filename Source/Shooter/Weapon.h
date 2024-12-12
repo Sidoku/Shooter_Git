@@ -6,16 +6,8 @@
 #include "AmmoType.h"
 #include "Item.h"
 #include "Engine/DataTable.h"
+#include "WeaponType.h"
 #include "Weapon.generated.h"
-
-UENUM(BlueprintType)
-enum class EWeaponType: uint8
-{
-	EWT_SubmachineGun UMETA(DisplayName = "SubmachineGun"),
-	EWT_AssaultRifle UMETA(DisplayName = "AssaultRifle"),
-	
-	EWT_MAX UMETA(DisplayName = "DefaultMAX")
-};
 
 USTRUCT()
 struct FWeaponDataTable : public FTableRowBase
@@ -54,6 +46,15 @@ struct FWeaponDataTable : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaterialIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ClipBoneName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ReloadMontageSection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UAnimInstance> AnimBP;
 };
 /**
  * 
@@ -129,9 +130,13 @@ public:
 
 	FORCEINLINE FName GetReloadMontageSection() const { return ReloadMontageSection;}
 
+	FORCEINLINE void SetReloadMontageSection(FName Name) { ReloadMontageSection = Name;}
+
 	void ReloadAmmo(int32 Amount);
 
 	FORCEINLINE FName GetClipBoneName() const { return ClipBoneName;}
+
+	FORCEINLINE void SetClipBoneName(FName Name) { ClipBoneName = Name;}
 
 	FORCEINLINE void SetMovingClip(bool Move) { bMovingClip = Move;}
 
