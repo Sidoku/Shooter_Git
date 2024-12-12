@@ -55,6 +55,30 @@ struct FWeaponDataTable : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UAnimInstance> AnimBP;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* CrosshairMiddle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* CrosshairRight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* CrosshairLeft;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* CrosshairTop;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UTexture2D* CrosshairBottom;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AutoFireRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UParticleSystem* MuzzleFlash;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundCue* FireSound;
 };
 /**
  * 
@@ -113,6 +137,34 @@ private:
 
 	int32 PreviousMaterialIndex;
 	
+	// Textures for the weapon crosshair
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	UTexture2D* CrosshairMiddle;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	UTexture2D* CrosshairRight;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	UTexture2D* CrosshairLeft;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	UTexture2D* CrosshairTop;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	UTexture2D* CrosshairBottom;
+
+	// The speed at which automatic fire happens
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	float AutoFireRate;
+
+	// Particle system spawned at BarrelSocket 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	class UParticleSystem* MuzzleFlash;
+
+	// Sound played when the weapon is fired
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	USoundCue* FireSound;
+	
 public:
 	// Adds an impulse to the weapon
 	void ThrowWeapon();
@@ -139,6 +191,12 @@ public:
 	FORCEINLINE void SetClipBoneName(FName Name) { ClipBoneName = Name;}
 
 	FORCEINLINE void SetMovingClip(bool Move) { bMovingClip = Move;}
+
+	FORCEINLINE float GetAutoFireRate() const { return AutoFireRate;}
+
+	FORCEINLINE UParticleSystem* GetMuzzleFlash() const { return MuzzleFlash;}
+
+	FORCEINLINE USoundCue* GetFireSound() const { return FireSound;}
 
 	bool ClipIsFull();
 };

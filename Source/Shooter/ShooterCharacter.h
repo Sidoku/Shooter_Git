@@ -248,14 +248,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "True"), meta=(ClampMin= "0.0", ClampMax = "1.0", UIMin = "0.0", UIMax = "1.0"))
 	float MouseAimingLookUpRate;
 
-	// Randomized gunshot sound cure
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta=(AllowPrivateAccess = "True"))
-	class USoundCue* FireSound;
-
-	// Flash spawned at Barrel socket
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta=(AllowPrivateAccess = "True"))
-	class UParticleSystem* MuzzleFlash;
-
 	// Montage for firing the weapon.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta=(AllowPrivateAccess = "True"))
 	class UAnimMontage* HipFireMontage;
@@ -319,9 +311,6 @@ private:
 
 	// True when we can fire, false when waiting for timer
 	bool bShouldFire;
-
-	// Rate of automatic gun fire
-	float AutomaticFireRate;
 
 	// Sets a timer between gunshots
 	FTimerHandle AutoFireTimer;
