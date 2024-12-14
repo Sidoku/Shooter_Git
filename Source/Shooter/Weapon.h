@@ -79,6 +79,12 @@ struct FWeaponDataTable : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundCue* FireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName BoneToHide;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAutomatic;
 };
 /**
  * 
@@ -97,6 +103,12 @@ protected:
 	void StopFalling();
 
 	virtual void OnConstruction(const FTransform& Transform) override;
+
+	virtual void BeginPlay() override;
+
+	void FinishMovingSlide();
+
+	void UpdateSlideDisplacement();
 	
 private:
 	FTimerHandle ThrowWeaponTimer;
@@ -164,6 +176,45 @@ private:
 	// Sound played when the weapon is fired
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
 	USoundCue* FireSound;
+
+	// Name of the bone to hide on the weapon mesh
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= DataTable, meta=(AllowPrivateAccess = "True"))
+	FName BoneToHide;
+
+	// Amount that the slide is pushed back during pistol fire
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Pistol, meta=(AllowPrivateAccess = "True"))
+	float SlideDisplacement;
+
+	// Curve for the slide displacement
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Pistol, meta=(AllowPrivateAccess = "True"))
+	UCurveFloat* SlideDisplacementCurve;
+
+	// Timer Handle for updating slide displacement
+	FTimerHandle SlideTimer;
+
+	// Time for displacing the slide during pistol fire
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Pistol, meta=(AllowPrivateAccess = "True"))
+	float SlideDisplacementTime;
+
+	// True when moving the pistol slide
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Pistol, meta=(AllowPrivateAccess = "True"))
+	bool bMovingSlide;
+
+	// Max distance for the slide on the pistol
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Pistol, meta=(AllowPrivateAccess = "True"))
+	float MaxSlideDisplacement;
+
+	// Max rotation for pistol recoil
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= Pistol, meta=(AllowPrivateAccess = "True"))
+	float MaxRecoilRotation;
+
+	// Amount the pistol will rotate during pistol fire
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category= Pistol, meta=(AllowPrivateAccess = "True"))
+	float RecoilRotation;
+
+	// True for auto gun fire
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Weapon Properties", meta=(AllowPrivateAccess = "True"))
+	bool bAutomatic;
 	
 public:
 	// Adds an impulse to the weapon
@@ -197,6 +248,10 @@ public:
 	FORCEINLINE UParticleSystem* GetMuzzleFlash() const { return MuzzleFlash;}
 
 	FORCEINLINE USoundCue* GetFireSound() const { return FireSound;}
+
+	FORCEINLINE bool GetAutomatic() const { return bAutomatic;}
+
+	void StartSlideTimer();
 
 	bool ClipIsFull();
 };
