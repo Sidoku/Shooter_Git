@@ -18,22 +18,6 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-<div align="center">
-    <img src="Title.png" , width = "500", height = "600">
-</div>
-
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <h3 align="center">Shooter</h3>
-  <p align="justify">
-   Frenemy Frontier is a 4 player online multiplayer game based on a bounty hunting theme, it has both cooperative and competitive mechanics, You can play as a bounty hunter or a criminal, While the game encourages players to work together, it ultimately results in one person winning, creating an environment of competition.
-    <br />
-    <div align="center">
-    <a href="https://www.youtube.com/watch?v=_Tr9U8EX-OM" target="_blank">Trailer</a>
-    </div>
-  </p>
-</div>
 
 <!-- TABLE OF CONTENTS -->
 <details>
